@@ -9,10 +9,10 @@ def main():
     sum = 0;
     for idx, val in enumerate(inputList):
         if idx == (len(inputList) - 1):
-            if inputList[idx] == inputList[0]:
-                sum += int(inputList[idx])
-        elif (inputList[idx] == inputList[idx + 1]):
-            sum += int(inputList[idx])
+            if val == inputList[0]:
+                sum += int(val)
+        elif (val == inputList[idx + 1]):
+            sum += int(val)
     print(sum)
 
 if __name__ == '__main__':
