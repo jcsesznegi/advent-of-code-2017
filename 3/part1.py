@@ -29,13 +29,13 @@ class SpiralMap:
     def __getPointUp(self, point):
         return (
             point[0],
-            point[1] + 1
+            point[1] - 1
         )
 
     def __getPointDown(self, point):
         return (
             point[0],
-            point[1] - 1
+            point[1] + 1
         )
 
     def __getPointLeft(self, point):
@@ -54,23 +54,24 @@ class SpiralMap:
 
         if self.currentDirection == 0:
             nextPoint = self.__getPointRight(self.currentPoint)
-            leftPoint = self.__getPointUp(self.currentPoint)
+            leftPoint = self.__getPointUp(nextPoint)
         elif self.currentDirection == 1:
             nextPoint = self.__getPointUp(self.currentPoint)
-            leftPoint = self.__getPointLeft(self.currentPoint)
+            leftPoint = self.__getPointLeft(nextPoint)
         elif self.currentDirection == 2:
             nextPoint = self.__getPointLeft(self.currentPoint)
-            leftPoint = self.__getPointDown(self.currentPoint)
+            leftPoint = self.__getPointDown(nextPoint)
         elif self.currentDirection == 3:
             nextPoint = self.__getPointDown(self.currentPoint)
-            leftPoint = self.__getPointRight(self.currentPoint)
+            leftPoint = self.__getPointRight(nextPoint)
 
         nextValue = self.currentValue + 1
-        print('next') 
+        self.map[nextPoint[0]][nextPoint[1]] = nextValue 
+ 
+        print("*******") 
         print(nextPoint[0]) 
         print(nextPoint[1]) 
-        self.map[nextPoint[0]][nextPoint[1]] = nextValue 
-          
+         
         if self.map[leftPoint[0]][leftPoint[1]] == None:
             if self.currentDirection == 3:
                 self.currentDirection = 0
@@ -84,7 +85,7 @@ class SpiralMap:
         self.width = ceil(sqrt(self.maxValue)) 
         self.__createEmptyMap()
 
-        self.centerIndex = ceil(self.width / 2)
+        self.centerIndex = ceil(self.width / 2) - 1
         self.currentPoint = self.centerPoint = (self.centerIndex, self.centerIndex)
 
         self.map[self.centerPoint[0]][self.centerPoint[1]] = self.currentValue
@@ -92,11 +93,16 @@ class SpiralMap:
         while self.currentValue <= self.maxValue:
             self.currentValue = self.__travel()
         
-        print(self.map[0][0])
+        for x in self.map:
+            print("------") 
+            for y in x:
+                print(y) 
+
+        print(self.map[2][3])
 
 def main():
     # maxValue = f.read().rstrip()
-    maxValue = 25
+    maxValue = 9
 
     s = SpiralMap(maxValue)
 
