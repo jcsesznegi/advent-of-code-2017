@@ -67,10 +67,6 @@ class SpiralMap:
 
         nextValue = self.currentValue + 1
         self.map[nextPoint[0]][nextPoint[1]] = nextValue 
- 
-        print("*******") 
-        print(nextPoint[0]) 
-        print(nextPoint[1]) 
          
         if self.map[leftPoint[0]][leftPoint[1]] == None:
             if self.currentDirection == 3:
@@ -90,22 +86,20 @@ class SpiralMap:
 
         self.map[self.centerPoint[0]][self.centerPoint[1]] = self.currentValue
 
-        while self.currentValue <= self.maxValue:
+        while self.currentValue < self.maxValue:
             self.currentValue = self.__travel()
-        
-        for x in self.map:
-            print("------") 
-            for y in x:
-                print(y) 
 
-        print(self.map[2][3])
+    def getDistanceLastToCenterPoint (self):
+        distanceX = abs(self.currentPoint[0] - self.centerPoint[0])
+        distanceY = abs(self.currentPoint[1] - self.centerPoint[1])
+        return distanceX + distanceY
+
 
 def main():
-    # maxValue = f.read().rstrip()
-    maxValue = 9
+    maxValue = f.read().rstrip()
 
     s = SpiralMap(maxValue)
-
+    print(s.getDistanceLastToCenterPoint()) 
 
 if __name__ == '__main__':
    main()
