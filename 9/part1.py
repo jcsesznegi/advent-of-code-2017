@@ -16,19 +16,22 @@ def findGroups(stream):
     while groupMatchCount > 0 and endIndex < len(stream):
         if stream[endIndex] == '{':
             groupMatchCount += 1
+            endIndex += 1
         elif stream[endIndex] == '}':
             groupMatchCount -= 1
+            if groupMatchCount != 0:
+                endIndex += 1
         else:
             endIndex += 1
 
     if groupMatchCount != 0:
         return groups
 
-    groups.append(stream[startIndex + 1:endIndex - 1])
+    groups.append(stream[startIndex + 1:endIndex])
 
     otherGroups = []
-    if endIndex < len(stream):
-        otherGroups = findGroups(stream[endIndex + 1:])
+    if endIndex < len(stream) - 1:
+        otherGroups = findGroups(stream[endIndex:])
 
     return groups + otherGroups
 
