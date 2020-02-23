@@ -5,51 +5,60 @@ import os
 f = open(os.path.join(os.path.dirname(__file__), '../input/10/part1.txt'), 'r')
 
 rangeSize = 256
-circle = []
-for i in range(rangeSize):
-    circle.append(i)
 
-currentPosition = 0
-lengths = []
-skip = 0
-
-def reverseLength(length):
-    endPosition = currentPosition + length
+def reverseLength(circle, currentPosition, length):
+    global rangeSize
+    endPosition = currentPosition + length - 1
 
     overSize = 0
     if (endPosition > rangeSize - 1):
-        overSize = endPosition - rangeSize - 1
+        overSize = endPosition - rangeSize + 1
 
-    currentValues = circle[currentPosition:endPosition - overSize]
+    currentValues = circle[currentPosition:endPosition - overSize + 1]
     if overSize:
         for index in range(overSize):
             currentValues.append(circle[index])
 
-    reverseValues = currentValues.reverse()
+    reverseValues = currentValues[::-1]
 
-    for index in range(currentPosition, endPosition - overSize):
-        circle[index] = reverseValues[index - currentPosition]
-    
+    currentReverseIndex = 0
+    for index in range(currentPosition, endPosition - overSize + 1):
+        circle[index] = reverseValues[currentReverseIndex]
+        currentReverseIndex = currentReverseIndex + 1
+
     for index in range(overSize):
-        circle[index] = reverseValues[endPosition + index +1]
+        circle[index] = reverseValues[currentReverseIndex]
+        currentReverseIndex = currentReverseIndex + 1
 
-def updateCurrentPosition():
-    currentPosition += skip
+    return circle
 
-    if (currentPosition > rangeSize - 1):
-        currentPosition -= rangeSize
+def updateCurrentPosition(position, length, skip):
+    global rangeSize
+    position = position + length + skip
+
+    if (position > rangeSize - 1):
+        position = position - rangeSize
+
+    return position
 
 def main():
 
+    circle = []
+    for i in range(rangeSize):
+         circle.append(i)
+
     line = f.readline().rstrip()
 
+    lengths = []
     for lengthString in line.split(','):
         lengths.append(int(lengthString))
 
+    currentPosition = 0
+    skip = 0
     for length in lengths:
-        reverseLength(length)
-        updateCurrentPosition()
-        skip += 1
+        circle = reverseLength(circle, currentPosition, length)
+        currentPosition = updateCurrentPosition(currentPosition, length, skip)
+        skip = skip + 1
 
     print(circle[0] * circle[1])
 
