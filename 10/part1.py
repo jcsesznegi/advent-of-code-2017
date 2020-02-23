@@ -1,64 +1,41 @@
 
-
 import os
 
 f = open(os.path.join(os.path.dirname(__file__), '../input/10/part1.txt'), 'r')
 
-rangeSize = 256
 
-def reverseLength(circle, currentPosition, length):
-    global rangeSize
-    endPosition = currentPosition + length - 1
+def reverseLength(circle, position, length):
+    if (position + length < len(circle)):
+        before = circle[:position]
+        middle = circle[position:position + length]
+        after = circle[position + length:]
 
-    overSize = 0
-    if (endPosition > rangeSize - 1):
-        overSize = endPosition - rangeSize + 1
+        return before + middle[::-1] + after
+    else:
+        before = circle[:position]
+        rest = circle[position:]
+        overSize = (position + length) % len(circle) 
+        valuesToReverse = rest + before[:overSize]
+        reverseValues = valuesToReverse[::-1]
 
-    currentValues = circle[currentPosition:endPosition - overSize + 1]
-    if overSize:
-        for index in range(overSize):
-            currentValues.append(circle[index])
+        return reverseValues[-overSize:] + before[overSize:] + reverseValues[:-overSize]
 
-    reverseValues = currentValues[::-1]
+def doHashRound(circle, lengths, position=0, skip=0):
+    for length in lengths:
+        circle = reverseLength(circle, position, length)
 
-    currentReverseIndex = 0
-    for index in range(currentPosition, endPosition - overSize + 1):
-        circle[index] = reverseValues[currentReverseIndex]
-        currentReverseIndex = currentReverseIndex + 1
-
-    for index in range(overSize):
-        circle[index] = reverseValues[currentReverseIndex]
-        currentReverseIndex = currentReverseIndex + 1
+        position = position + length + skip
+        if (position >= len(circle)):
+            position = position % len(circle)
+        
+        skip = skip + 1
 
     return circle
 
-def updateCurrentPosition(position, length, skip):
-    global rangeSize
-    position = position + length + skip
-
-    if (position > rangeSize - 1):
-        position = position - rangeSize
-
-    return position
-
 def main():
-
-    circle = []
-    for i in range(rangeSize):
-         circle.append(i)
-
     line = f.readline().rstrip()
-
-    lengths = []
-    for lengthString in line.split(','):
-        lengths.append(int(lengthString))
-
-    currentPosition = 0
-    skip = 0
-    for length in lengths:
-        circle = reverseLength(circle, currentPosition, length)
-        currentPosition = updateCurrentPosition(currentPosition, length, skip)
-        skip = skip + 1
+    lengths = [int(lengthString) for lengthString in line.split(',')]
+    circle = doHashRound(list(range(256)), lengths)
 
     print(circle[0] * circle[1])
 
